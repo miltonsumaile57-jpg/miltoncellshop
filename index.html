@@ -1,0 +1,722 @@
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>MiltonCellShop — Tecnologia ao Seu Alcance</title>
+  <link href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@400;600;700&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet"/>
+  <style>
+    :root {
+      --bg: #0a0a0a;
+      --surface: #141414;
+      --card: #1a1a1a;
+      --border: #2a2a2a;
+      --primary: #e63329;
+      --primary-dark: #b52820;
+      --accent: #ff6b35;
+      --text: #f0f0f0;
+      --muted: #888;
+      --success: #22c55e;
+      --radius: 12px;
+    }
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; }
+    body { font-family: 'DM Sans', sans-serif; background: var(--bg); color: var(--text); min-height: 100vh; }
+
+    /* NAV */
+    nav {
+      position: sticky; top: 0; z-index: 100;
+      background: rgba(10,10,10,0.95);
+      backdrop-filter: blur(12px);
+      border-bottom: 1px solid var(--border);
+      padding: 0 2rem;
+      display: flex; align-items: center; justify-content: space-between;
+      height: 64px;
+    }
+    .nav-brand { font-family: 'Rajdhani', sans-serif; font-size: 1.6rem; font-weight: 700; color: var(--text); text-decoration: none; }
+    .nav-brand span { color: var(--primary); }
+    .nav-links { display: flex; gap: 2rem; list-style: none; }
+    .nav-links a { color: var(--muted); text-decoration: none; font-size: 0.9rem; transition: color 0.2s; }
+    .nav-links a:hover { color: var(--text); }
+    .nav-right { display: flex; gap: 1rem; align-items: center; }
+    .cart-btn {
+      background: var(--primary); color: #fff; border: none; border-radius: 8px;
+      padding: 0.5rem 1rem; cursor: pointer; font-size: 0.9rem; font-weight: 500;
+      display: flex; align-items: center; gap: 0.5rem; transition: background 0.2s;
+    }
+    .cart-btn:hover { background: var(--primary-dark); }
+    .cart-count {
+      background: #fff; color: var(--primary); border-radius: 50%;
+      width: 20px; height: 20px; display: flex; align-items: center; justify-content: center;
+      font-size: 0.75rem; font-weight: 700;
+    }
+
+    /* HERO */
+    .hero {
+      min-height: 88vh;
+      display: flex; align-items: center;
+      padding: 4rem 2rem;
+      position: relative; overflow: hidden;
+      background: linear-gradient(135deg, #0a0a0a 0%, #1a0a08 50%, #0a0a0a 100%);
+    }
+    .hero::before {
+      content: '';
+      position: absolute; inset: 0;
+      background: radial-gradient(ellipse at 70% 50%, rgba(230,51,41,0.12) 0%, transparent 65%);
+    }
+    .hero-content { max-width: 1200px; margin: 0 auto; width: 100%; display: grid; grid-template-columns: 1fr 1fr; gap: 4rem; align-items: center; position: relative; z-index: 1; }
+    .hero-badge { display: inline-block; background: rgba(230,51,41,0.15); border: 1px solid rgba(230,51,41,0.3); color: var(--primary); padding: 0.35rem 1rem; border-radius: 999px; font-size: 0.8rem; font-weight: 500; margin-bottom: 1.5rem; }
+    .hero h1 { font-family: 'Rajdhani', sans-serif; font-size: clamp(2.5rem, 5vw, 4rem); font-weight: 700; line-height: 1.1; margin-bottom: 1.2rem; }
+    .hero h1 span { color: var(--primary); }
+    .hero p { color: var(--muted); font-size: 1.05rem; line-height: 1.7; margin-bottom: 2rem; max-width: 440px; }
+    .hero-btns { display: flex; gap: 1rem; flex-wrap: wrap; }
+    .btn-primary { background: var(--primary); color: #fff; border: none; padding: 0.85rem 2rem; border-radius: 8px; font-size: 1rem; font-weight: 500; cursor: pointer; transition: all 0.2s; text-decoration: none; display: inline-block; }
+    .btn-primary:hover { background: var(--primary-dark); transform: translateY(-1px); }
+    .btn-outline { background: transparent; color: var(--text); border: 1px solid var(--border); padding: 0.85rem 2rem; border-radius: 8px; font-size: 1rem; cursor: pointer; transition: all 0.2s; text-decoration: none; display: inline-block; }
+    .btn-outline:hover { border-color: var(--primary); color: var(--primary); }
+    .hero-stats { display: flex; gap: 2rem; margin-top: 2.5rem; }
+    .stat { text-align: center; }
+    .stat-num { font-family: 'Rajdhani', sans-serif; font-size: 1.8rem; font-weight: 700; color: var(--primary); }
+    .stat-label { font-size: 0.8rem; color: var(--muted); }
+    .hero-visual { display: flex; justify-content: center; align-items: center; }
+    .phone-showcase {
+      width: 280px; height: 480px;
+      background: linear-gradient(145deg, #1e1e1e, #2a2a2a);
+      border-radius: 40px;
+      border: 2px solid #333;
+      display: flex; flex-direction: column; align-items: center; justify-content: center;
+      box-shadow: 0 40px 80px rgba(0,0,0,0.6), 0 0 40px rgba(230,51,41,0.1);
+      position: relative; animation: float 3s ease-in-out infinite;
+    }
+    @keyframes float { 0%,100%{ transform: translateY(0); } 50%{ transform: translateY(-12px); } }
+    .phone-screen {
+      width: 220px; height: 380px;
+      background: linear-gradient(145deg, #111, #1a1a1a);
+      border-radius: 28px;
+      display: flex; flex-direction: column; align-items: center; justify-content: center;
+      overflow: hidden; position: relative;
+    }
+    .phone-icon { font-size: 5rem; margin-bottom: 1rem; }
+    .phone-label { font-family: 'Rajdhani', sans-serif; font-size: 1.1rem; color: var(--primary); font-weight: 600; }
+    .phone-sub { font-size: 0.75rem; color: var(--muted); margin-top: 0.3rem; }
+
+    /* TRUST BAR */
+    .trust-bar { background: var(--surface); border-top: 1px solid var(--border); border-bottom: 1px solid var(--border); padding: 1.2rem 2rem; }
+    .trust-inner { max-width: 1200px; margin: 0 auto; display: flex; justify-content: space-around; flex-wrap: wrap; gap: 1rem; }
+    .trust-item { display: flex; align-items: center; gap: 0.6rem; font-size: 0.9rem; color: var(--muted); }
+    .trust-icon { font-size: 1.2rem; }
+
+    /* SECTIONS */
+    section { padding: 5rem 2rem; }
+    .section-inner { max-width: 1200px; margin: 0 auto; }
+    .section-header { text-align: center; margin-bottom: 3rem; }
+    .section-tag { font-size: 0.8rem; color: var(--primary); font-weight: 500; text-transform: uppercase; letter-spacing: 2px; margin-bottom: 0.8rem; display: block; }
+    .section-title { font-family: 'Rajdhani', sans-serif; font-size: clamp(1.8rem, 3vw, 2.5rem); font-weight: 700; }
+    .section-sub { color: var(--muted); margin-top: 0.8rem; font-size: 1rem; }
+
+    /* PRODUCTS */
+    .products-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 1.5rem; }
+    .product-card {
+      background: var(--card); border: 1px solid var(--border); border-radius: var(--radius);
+      overflow: hidden; transition: all 0.3s; cursor: pointer; position: relative;
+    }
+    .product-card:hover { border-color: var(--primary); transform: translateY(-4px); box-shadow: 0 20px 40px rgba(0,0,0,0.4); }
+    .product-badge { position: absolute; top: 1rem; left: 1rem; background: var(--primary); color: #fff; padding: 0.25rem 0.7rem; border-radius: 999px; font-size: 0.75rem; font-weight: 600; }
+    .product-img { height: 200px; display: flex; align-items: center; justify-content: center; background: linear-gradient(145deg, #1e1e1e, #252525); font-size: 5rem; }
+    .product-body { padding: 1.2rem; }
+    .product-brand { font-size: 0.75rem; color: var(--primary); font-weight: 500; text-transform: uppercase; letter-spacing: 1px; }
+    .product-name { font-family: 'Rajdhani', sans-serif; font-size: 1.2rem; font-weight: 600; margin: 0.3rem 0; }
+    .product-specs { font-size: 0.82rem; color: var(--muted); margin-bottom: 1rem; line-height: 1.6; }
+    .product-footer { display: flex; justify-content: space-between; align-items: center; }
+    .product-price { font-family: 'Rajdhani', sans-serif; font-size: 1.4rem; font-weight: 700; color: var(--primary); }
+    .product-price-old { font-size: 0.85rem; color: var(--muted); text-decoration: line-through; display: block; }
+    .add-cart-btn { background: var(--primary); color: #fff; border: none; padding: 0.6rem 1rem; border-radius: 8px; cursor: pointer; font-size: 0.85rem; transition: all 0.2s; }
+    .add-cart-btn:hover { background: var(--primary-dark); }
+
+    /* FEATURES */
+    .features-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(250px, 1fr)); gap: 1.5rem; }
+    .feature-card { background: var(--card); border: 1px solid var(--border); border-radius: var(--radius); padding: 2rem; transition: border-color 0.2s; }
+    .feature-card:hover { border-color: var(--primary); }
+    .feature-icon { font-size: 2.5rem; margin-bottom: 1rem; display: block; }
+    .feature-title { font-family: 'Rajdhani', sans-serif; font-size: 1.2rem; font-weight: 600; margin-bottom: 0.5rem; }
+    .feature-desc { color: var(--muted); font-size: 0.9rem; line-height: 1.6; }
+
+    /* SECURITY */
+    .security-section { background: var(--surface); }
+    .security-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 4rem; align-items: center; }
+    .security-list { list-style: none; display: flex; flex-direction: column; gap: 1.2rem; }
+    .security-item { display: flex; align-items: flex-start; gap: 1rem; }
+    .security-check { width: 32px; height: 32px; background: rgba(34,197,94,0.15); border: 1px solid rgba(34,197,94,0.3); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 0.85rem; flex-shrink: 0; color: var(--success); }
+    .security-text h4 { font-size: 0.95rem; font-weight: 500; margin-bottom: 0.2rem; }
+    .security-text p { font-size: 0.85rem; color: var(--muted); line-height: 1.5; }
+    .ssl-badge { background: var(--card); border: 1px solid var(--border); border-radius: var(--radius); padding: 2rem; text-align: center; }
+    .ssl-icon { font-size: 4rem; display: block; margin-bottom: 1rem; }
+    .ssl-badge h3 { font-family: 'Rajdhani', sans-serif; font-size: 1.4rem; margin-bottom: 0.5rem; color: var(--success); }
+    .ssl-badge p { color: var(--muted); font-size: 0.9rem; }
+
+    /* PAYMENT */
+    .payment-methods { display: flex; flex-wrap: wrap; gap: 1rem; justify-content: center; margin-top: 2rem; }
+    .payment-card { background: var(--card); border: 1px solid var(--border); border-radius: 8px; padding: 1rem 1.5rem; display: flex; align-items: center; gap: 0.75rem; font-size: 0.9rem; }
+    .payment-icon { font-size: 1.5rem; }
+
+    /* SHIPPING */
+    .shipping-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 1.2rem; }
+    .shipping-card { background: var(--card); border: 1px solid var(--border); border-radius: var(--radius); padding: 1.5rem; text-align: center; }
+    .shipping-card .icon { font-size: 2rem; display: block; margin-bottom: 0.8rem; }
+    .shipping-card h4 { font-family: 'Rajdhani', sans-serif; font-size: 1.1rem; font-weight: 600; margin-bottom: 0.4rem; }
+    .shipping-card p { color: var(--muted); font-size: 0.85rem; }
+    .shipping-card .price { color: var(--primary); font-weight: 600; margin-top: 0.5rem; font-size: 0.9rem; }
+
+    /* CART MODAL */
+    .modal-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.8); z-index: 200; display: none; align-items: flex-start; justify-content: flex-end; padding: 1rem; }
+    .modal-overlay.open { display: flex; }
+    .cart-modal { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); width: 400px; max-height: 90vh; overflow-y: auto; margin-top: 4rem; }
+    .cart-header { padding: 1.5rem; border-bottom: 1px solid var(--border); display: flex; justify-content: space-between; align-items: center; }
+    .cart-header h3 { font-family: 'Rajdhani', sans-serif; font-size: 1.3rem; }
+    .close-btn { background: none; border: none; color: var(--muted); font-size: 1.5rem; cursor: pointer; }
+    .cart-items { padding: 1rem; }
+    .cart-item { display: flex; gap: 1rem; align-items: center; padding: 0.8rem; border-radius: 8px; background: var(--card); margin-bottom: 0.8rem; }
+    .cart-item-icon { font-size: 2rem; }
+    .cart-item-info { flex: 1; }
+    .cart-item-name { font-size: 0.9rem; font-weight: 500; }
+    .cart-item-price { color: var(--primary); font-weight: 600; font-size: 0.9rem; }
+    .remove-btn { background: none; border: none; color: var(--muted); cursor: pointer; font-size: 1rem; }
+    .cart-empty { text-align: center; padding: 3rem; color: var(--muted); }
+    .cart-footer { padding: 1.5rem; border-top: 1px solid var(--border); }
+    .cart-total { display: flex; justify-content: space-between; margin-bottom: 1rem; font-family: 'Rajdhani', sans-serif; font-size: 1.2rem; }
+    .checkout-btn { width: 100%; background: var(--primary); color: #fff; border: none; padding: 1rem; border-radius: 8px; font-size: 1rem; font-weight: 500; cursor: pointer; transition: background 0.2s; }
+    .checkout-btn:hover { background: var(--primary-dark); }
+
+    /* CHECKOUT MODAL */
+    .checkout-modal { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); width: 500px; max-height: 90vh; overflow-y: auto; margin: auto; }
+    .checkout-form { padding: 1.5rem; }
+    .form-group { margin-bottom: 1.2rem; }
+    .form-group label { display: block; font-size: 0.85rem; color: var(--muted); margin-bottom: 0.4rem; }
+    .form-group input, .form-group select { width: 100%; background: var(--card); border: 1px solid var(--border); color: var(--text); padding: 0.75rem 1rem; border-radius: 8px; font-size: 0.9rem; outline: none; transition: border-color 0.2s; }
+    .form-group input:focus, .form-group select:focus { border-color: var(--primary); }
+    .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
+    .form-section-title { font-family: 'Rajdhani', sans-serif; font-size: 1rem; font-weight: 600; margin: 1.5rem 0 1rem; color: var(--primary); }
+    .place-order-btn { width: 100%; background: var(--success); color: #fff; border: none; padding: 1rem; border-radius: 8px; font-size: 1rem; font-weight: 500; cursor: pointer; margin-top: 1rem; transition: background 0.2s; }
+    .place-order-btn:hover { background: #16a34a; }
+
+    /* SUCCESS */
+    .success-modal { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); width: 400px; padding: 3rem; text-align: center; margin: auto; }
+    .success-icon { font-size: 4rem; display: block; margin-bottom: 1rem; }
+    .success-modal h3 { font-family: 'Rajdhani', sans-serif; font-size: 1.8rem; color: var(--success); margin-bottom: 0.8rem; }
+    .success-modal p { color: var(--muted); font-size: 0.95rem; line-height: 1.6; }
+    .order-num { background: var(--card); border-radius: 8px; padding: 1rem; margin: 1.5rem 0; font-family: 'Rajdhani', sans-serif; font-size: 1.2rem; color: var(--primary); }
+    .continue-btn { background: var(--primary); color: #fff; border: none; padding: 0.85rem 2rem; border-radius: 8px; cursor: pointer; font-size: 0.95rem; margin-top: 1rem; }
+
+    /* TOAST */
+    .toast { position: fixed; bottom: 2rem; left: 50%; transform: translateX(-50%) translateY(100px); background: var(--success); color: #fff; padding: 0.8rem 1.5rem; border-radius: 8px; font-size: 0.9rem; z-index: 300; transition: transform 0.3s; }
+    .toast.show { transform: translateX(-50%) translateY(0); }
+
+    /* FOOTER */
+    footer { background: var(--surface); border-top: 1px solid var(--border); padding: 3rem 2rem; }
+    .footer-inner { max-width: 1200px; margin: 0 auto; display: grid; grid-template-columns: 2fr 1fr 1fr 1fr; gap: 2rem; }
+    .footer-brand { font-family: 'Rajdhani', sans-serif; font-size: 1.4rem; font-weight: 700; margin-bottom: 0.8rem; }
+    .footer-brand span { color: var(--primary); }
+    .footer-desc { color: var(--muted); font-size: 0.9rem; line-height: 1.6; }
+    .footer-col h4 { font-size: 0.9rem; font-weight: 600; margin-bottom: 1rem; }
+    .footer-col ul { list-style: none; display: flex; flex-direction: column; gap: 0.5rem; }
+    .footer-col ul li a { color: var(--muted); text-decoration: none; font-size: 0.85rem; transition: color 0.2s; }
+    .footer-col ul li a:hover { color: var(--primary); }
+    .footer-bottom { max-width: 1200px; margin: 2rem auto 0; padding-top: 1.5rem; border-top: 1px solid var(--border); display: flex; justify-content: space-between; color: var(--muted); font-size: 0.82rem; }
+
+    @media (max-width: 768px) {
+      .hero-content { grid-template-columns: 1fr; }
+      .hero-visual { display: none; }
+      .security-grid { grid-template-columns: 1fr; }
+      .footer-inner { grid-template-columns: 1fr 1fr; }
+      .nav-links { display: none; }
+      .cart-modal, .checkout-modal { width: 95vw; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <a href="#" class="nav-brand">Milton<span>Cell</span>Shop</a>
+  <ul class="nav-links">
+    <li><a href="#produtos">Produtos</a></li>
+    <li><a href="#seguranca">Segurança</a></li>
+    <li><a href="#pagamento">Pagamento</a></li>
+    <li><a href="#envio">Envio</a></li>
+  </ul>
+  <div class="nav-right">
+    <button class="cart-btn" onclick="toggleCart()">
+      🛒 Carrinho <span class="cart-count" id="cartCount">0</span>
+    </button>
+  </div>
+</nav>
+
+<!-- HERO -->
+<section class="hero" id="inicio">
+  <div class="hero-content">
+    <div>
+      <div class="hero-badge">🇲🇿 Loja Moçambicana de Confiança</div>
+      <h1>Tecnologia ao<br/><span>Seu Alcance</span></h1>
+      <p>Os melhores smartphones do mercado com os melhores preços. Entrega rápida em todo Moçambique e pagamento via M-Pesa.</p>
+      <div class="hero-btns">
+        <a href="#produtos" class="btn-primary">Ver Produtos</a>
+        <a href="#seguranca" class="btn-outline">Nossa Segurança</a>
+      </div>
+      <div class="hero-stats">
+        <div class="stat"><div class="stat-num">500+</div><div class="stat-label">Clientes</div></div>
+        <div class="stat"><div class="stat-num">6</div><div class="stat-label">Marcas</div></div>
+        <div class="stat"><div class="stat-num">100%</div><div class="stat-label">Seguro</div></div>
+      </div>
+    </div>
+    <div class="hero-visual">
+      <div class="phone-showcase">
+        <div class="phone-screen">
+          <div class="phone-icon">📱</div>
+          <div class="phone-label">MiltonCellShop</div>
+          <div class="phone-sub">Tecnologia ao Seu Alcance</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- TRUST BAR -->
+<div class="trust-bar">
+  <div class="trust-inner">
+    <div class="trust-item"><span class="trust-icon">🔒</span> SSL Seguro</div>
+    <div class="trust-item"><span class="trust-icon">📦</span> Entrega Rápida</div>
+    <div class="trust-item"><span class="trust-icon">💳</span> M-Pesa Aceite</div>
+    <div class="trust-item"><span class="trust-icon">↩️</span> Garantia 12 meses</div>
+    <div class="trust-item"><span class="trust-icon">🎧</span> Suporte 24/7</div>
+  </div>
+</div>
+
+<!-- PRODUTOS -->
+<section id="produtos">
+  <div class="section-inner">
+    <div class="section-header">
+      <span class="section-tag">Catálogo</span>
+      <h2 class="section-title">Os Nossos Produtos</h2>
+      <p class="section-sub">Smartphones de qualidade para todos os bolsos</p>
+    </div>
+    <div class="products-grid" id="productsGrid"></div>
+  </div>
+</section>
+
+<!-- FEATURES -->
+<section style="background: var(--surface); border-top: 1px solid var(--border); border-bottom: 1px solid var(--border);">
+  <div class="section-inner">
+    <div class="section-header">
+      <span class="section-tag">Porquê Nós</span>
+      <h2 class="section-title">A Diferença MiltonCellShop</h2>
+    </div>
+    <div class="features-grid">
+      <div class="feature-card">
+        <span class="feature-icon">✅</span>
+        <h3 class="feature-title">Produtos Originais</h3>
+        <p class="feature-desc">Todos os nossos smartphones são 100% originais com garantia do fabricante. Sem imitações.</p>
+      </div>
+      <div class="feature-card">
+        <span class="feature-icon">🚀</span>
+        <h3 class="feature-title">Entrega Rápida</h3>
+        <p class="feature-desc">Entrega em Maputo em 24h. Para outras províncias em 2 a 5 dias úteis via transportadoras parceiras.</p>
+      </div>
+      <div class="feature-card">
+        <span class="feature-icon">🔐</span>
+        <h3 class="feature-title">Compra Segura</h3>
+        <p class="feature-desc">Certificado SSL activo. Os seus dados pessoais e financeiros estão completamente protegidos.</p>
+      </div>
+      <div class="feature-card">
+        <span class="feature-icon">🛠️</span>
+        <h3 class="feature-title">Suporte Técnico</h3>
+        <p class="feature-desc">Equipa de suporte disponível via WhatsApp e e-mail para resolver qualquer questão.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- SEGURANÇA -->
+<section id="seguranca">
+  <div class="section-inner">
+    <div class="section-header">
+      <span class="section-tag">Segurança</span>
+      <h2 class="section-title">A Sua Segurança é a Nossa Prioridade</h2>
+      <p class="section-sub">Implementamos as mais avançadas medidas de segurança</p>
+    </div>
+    <div class="security-grid">
+      <ul class="security-list">
+        <li class="security-item">
+          <div class="security-check">🔒</div>
+          <div class="security-text">
+            <h4>Certificado SSL/TLS</h4>
+            <p>Todas as comunicações entre o seu browser e o nosso servidor são encriptadas com SSL de 256 bits.</p>
+          </div>
+        </li>
+        <li class="security-item">
+          <div class="security-check">🛡️</div>
+          <div class="security-text">
+            <h4>Protecção de Dados Pessoais</h4>
+            <p>Os seus dados pessoais nunca são partilhados com terceiros sem o seu consentimento explícito.</p>
+          </div>
+        </li>
+        <li class="security-item">
+          <div class="security-check">💳</div>
+          <div class="security-text">
+            <h4>Pagamentos Seguros</h4>
+            <p>Integramos com provedores de pagamento certificados. Nenhum dado de cartão é armazenado nos nossos servidores.</p>
+          </div>
+        </li>
+        <li class="security-item">
+          <div class="security-check">🔍</div>
+          <div class="security-text">
+            <h4>Monitorização 24/7</h4>
+            <p>Os nossos sistemas são monitorizados continuamente para detectar e prevenir qualquer actividade suspeita.</p>
+          </div>
+        </li>
+        <li class="security-item">
+          <div class="security-check">✅</div>
+          <div class="security-text">
+            <h4>Autenticação Segura</h4>
+            <p>Sistema de autenticação com verificação em dois passos disponível para maior protecção da sua conta.</p>
+          </div>
+        </li>
+      </ul>
+      <div class="ssl-badge">
+        <span class="ssl-icon">🔐</span>
+        <h3>SSL Activo</h3>
+        <p>Este site utiliza encriptação SSL de 256 bits para proteger todas as suas transacções e dados pessoais.</p>
+        <br/>
+        <div style="background: rgba(34,197,94,0.1); border: 1px solid rgba(34,197,94,0.3); border-radius: 8px; padding: 1rem; margin-top: 1rem;">
+          <div style="color: var(--success); font-weight: 600; font-size: 0.9rem;">🟢 Ligação Segura Verificada</div>
+          <div style="color: var(--muted); font-size: 0.8rem; margin-top: 0.3rem;">https://miltoncellshop.netlify.app</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- PAGAMENTO -->
+<section id="pagamento" style="background: var(--surface); border-top: 1px solid var(--border); border-bottom: 1px solid var(--border);">
+  <div class="section-inner">
+    <div class="section-header">
+      <span class="section-tag">Pagamento</span>
+      <h2 class="section-title">Métodos de Pagamento</h2>
+      <p class="section-sub">Aceitamos os métodos de pagamento mais populares em Moçambique</p>
+    </div>
+    <div class="payment-methods">
+      <div class="payment-card"><span class="payment-icon">📱</span> M-Pesa</div>
+      <div class="payment-card"><span class="payment-icon">📱</span> e-Mola</div>
+      <div class="payment-card"><span class="payment-icon">🏦</span> Transferência Bancária</div>
+      <div class="payment-card"><span class="payment-icon">💳</span> Cartão Visa/Mastercard</div>
+      <div class="payment-card"><span class="payment-icon">🅿️</span> PayPal</div>
+      <div class="payment-card"><span class="payment-icon">💵</span> Pagamento na Entrega</div>
+    </div>
+  </div>
+</section>
+
+<!-- ENVIO -->
+<section id="envio">
+  <div class="section-inner">
+    <div class="section-header">
+      <span class="section-tag">Logística</span>
+      <h2 class="section-title">Opções de Envio e Entrega</h2>
+      <p class="section-sub">Entregamos em todo o território moçambicano</p>
+    </div>
+    <div class="shipping-grid">
+      <div class="shipping-card">
+        <span class="icon">⚡</span>
+        <h4>Entrega Expresso</h4>
+        <p>Maputo e Matola — entrega no mesmo dia para encomendas antes das 14h.</p>
+        <div class="price">150 MZN</div>
+      </div>
+      <div class="shipping-card">
+        <span class="icon">🚚</span>
+        <h4>Entrega Padrão</h4>
+        <p>Maputo e arredores — entrega em 24 horas úteis após confirmação do pagamento.</p>
+        <div class="price">100 MZN</div>
+      </div>
+      <div class="shipping-card">
+        <span class="icon">🌍</span>
+        <h4>Entrega Nacional</h4>
+        <p>Todas as províncias — entrega em 3 a 5 dias úteis via transportadoras parceiras.</p>
+        <div class="price">250 MZN</div>
+      </div>
+      <div class="shipping-card">
+        <span class="icon">🏪</span>
+        <h4>Levantamento na Loja</h4>
+        <p>Levante gratuitamente na nossa loja em Maputo. Disponível em 2 horas após pagamento.</p>
+        <div class="price">Gratuito</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-inner">
+    <div>
+      <div class="footer-brand">Milton<span>Cell</span>Shop</div>
+      <p class="footer-desc">A loja moçambicana de confiança para smartphones de qualidade. Tecnologia ao alcance de todos.</p>
+    </div>
+    <div class="footer-col">
+      <h4>Loja</h4>
+      <ul>
+        <li><a href="#produtos">Produtos</a></li>
+        <li><a href="#envio">Envio</a></li>
+        <li><a href="#pagamento">Pagamento</a></li>
+      </ul>
+    </div>
+    <div class="footer-col">
+      <h4>Suporte</h4>
+      <ul>
+        <li><a href="#">WhatsApp</a></li>
+        <li><a href="#">E-mail</a></li>
+        <li><a href="#">FAQ</a></li>
+      </ul>
+    </div>
+    <div class="footer-col">
+      <h4>Legal</h4>
+      <ul>
+        <li><a href="#">Privacidade</a></li>
+        <li><a href="#">Termos de Uso</a></li>
+        <li><a href="#">Devoluções</a></li>
+      </ul>
+    </div>
+  </div>
+  <div class="footer-bottom">
+    <span>© 2024 MiltonCellShop. Todos os direitos reservados.</span>
+    <span>🇲🇿 Maputo, Moçambique</span>
+  </div>
+</footer>
+
+<!-- CART MODAL -->
+<div class="modal-overlay" id="cartOverlay">
+  <div class="cart-modal">
+    <div class="cart-header">
+      <h3>🛒 Carrinho de Compras</h3>
+      <button class="close-btn" onclick="toggleCart()">✕</button>
+    </div>
+    <div class="cart-items" id="cartItems"></div>
+    <div class="cart-footer" id="cartFooter" style="display:none">
+      <div class="cart-total"><span>Total:</span><span id="cartTotal" style="color:var(--primary)"></span></div>
+      <button class="checkout-btn" onclick="openCheckout()">Finalizar Compra →</button>
+    </div>
+  </div>
+</div>
+
+<!-- CHECKOUT MODAL -->
+<div class="modal-overlay" id="checkoutOverlay" style="align-items:center;">
+  <div class="checkout-modal">
+    <div class="cart-header">
+      <h3>🏁 Finalizar Compra</h3>
+      <button class="close-btn" onclick="closeCheckout()">✕</button>
+    </div>
+    <div class="checkout-form">
+      <div class="form-section-title">📋 Dados Pessoais</div>
+      <div class="form-row">
+        <div class="form-group"><label>Nome Completo</label><input type="text" placeholder="Ex: João Silva"/></div>
+        <div class="form-group"><label>Telefone</label><input type="tel" placeholder="Ex: +258 84 000 0000"/></div>
+      </div>
+      <div class="form-group"><label>E-mail</label><input type="email" placeholder="Ex: joao@email.com"/></div>
+
+      <div class="form-section-title">📍 Endereço de Entrega</div>
+      <div class="form-group"><label>Endereço</label><input type="text" placeholder="Rua, número, bairro"/></div>
+      <div class="form-row">
+        <div class="form-group"><label>Cidade</label><input type="text" placeholder="Ex: Maputo"/></div>
+        <div class="form-group"><label>Província</label>
+          <select>
+            <option>Maputo Cidade</option><option>Maputo Província</option>
+            <option>Gaza</option><option>Inhambane</option><option>Sofala</option>
+            <option>Manica</option><option>Tete</option><option>Zambézia</option>
+            <option>Nampula</option><option>Cabo Delgado</option><option>Niassa</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="form-section-title">💳 Método de Pagamento</div>
+      <div class="form-group">
+        <label>Seleccione o método</label>
+        <select id="paymentMethod" onchange="togglePaymentFields()">
+          <option value="mpesa">📱 M-Pesa</option>
+          <option value="emola">📱 e-Mola</option>
+          <option value="card">💳 Cartão Visa/Mastercard</option>
+          <option value="paypal">🅿️ PayPal</option>
+          <option value="transfer">🏦 Transferência Bancária</option>
+          <option value="cod">💵 Pagamento na Entrega</option>
+        </select>
+      </div>
+      <div id="mpesaFields">
+        <div class="form-group"><label>Número M-Pesa</label><input type="tel" placeholder="+258 84 000 0000"/></div>
+      </div>
+      <div id="cardFields" style="display:none">
+        <div class="form-group"><label>Número do Cartão</label><input type="text" placeholder="**** **** **** ****"/></div>
+        <div class="form-row">
+          <div class="form-group"><label>Validade</label><input type="text" placeholder="MM/AA"/></div>
+          <div class="form-group"><label>CVV</label><input type="text" placeholder="***"/></div>
+        </div>
+      </div>
+
+      <div class="form-section-title">🚚 Opção de Entrega</div>
+      <div class="form-group">
+        <label>Seleccione a entrega</label>
+        <select>
+          <option>⚡ Expresso — Mesmo dia (150 MZN)</option>
+          <option>🚚 Padrão — 24h (100 MZN)</option>
+          <option>🌍 Nacional — 3 a 5 dias (250 MZN)</option>
+          <option>🏪 Levantamento na Loja (Gratuito)</option>
+        </select>
+      </div>
+
+      <div style="background:var(--card); border-radius:8px; padding:1rem; margin-top:1rem;">
+        <div style="display:flex; justify-content:space-between; margin-bottom:0.5rem; font-size:0.9rem; color:var(--muted)">
+          <span>Subtotal:</span><span id="checkoutSubtotal"></span>
+        </div>
+        <div style="display:flex; justify-content:space-between; font-family:'Rajdhani',sans-serif; font-size:1.2rem; font-weight:700;">
+          <span>Total:</span><span style="color:var(--primary)" id="checkoutTotal"></span>
+        </div>
+      </div>
+
+      <button class="place-order-btn" onclick="placeOrder()">✅ Confirmar Encomenda</button>
+    </div>
+  </div>
+</div>
+
+<!-- SUCCESS MODAL -->
+<div class="modal-overlay" id="successOverlay" style="align-items:center;">
+  <div class="success-modal">
+    <span class="success-icon">🎉</span>
+    <h3>Encomenda Confirmada!</h3>
+    <p>A sua encomenda foi recebida com sucesso. Receberá uma confirmação por SMS e e-mail em breve.</p>
+    <div class="order-num" id="orderNum">#MCZ-000000</div>
+    <p style="font-size:0.85rem; color:var(--muted)">Guarde este número para acompanhar a sua encomenda.</p>
+    <button class="continue-btn" onclick="closeSuccess()">Continuar a Comprar</button>
+  </div>
+</div>
+
+<!-- TOAST -->
+<div class="toast" id="toast">✅ Produto adicionado ao carrinho!</div>
+
+<script>
+  const products = [
+    { id: 1, brand: "Samsung", name: "Galaxy A15", price: 18500, oldPrice: 21000, emoji: "📱", badge: "Mais Vendido", specs: "6.5\" · 4GB RAM · 128GB · 5000mAh · Android 14" },
+    { id: 2, brand: "Tecno", name: "Spark 20", price: 12900, oldPrice: 15000, emoji: "📲", badge: "Promoção", specs: "6.6\" · 8GB RAM · 128GB · 5000mAh · Android 13" },
+    { id: 3, brand: "Apple", name: "iPhone 14", price: 89000, oldPrice: 95000, emoji: "🍎", badge: "Premium", specs: "6.1\" · 6GB RAM · 128GB · A15 Bionic · iOS 17" },
+    { id: 4, brand: "Xiaomi", name: "Redmi 13C", price: 10500, oldPrice: 12000, emoji: "📡", badge: "Económico", specs: "6.74\" · 4GB RAM · 128GB · 5000mAh · MIUI 14" },
+    { id: 5, brand: "Itel", name: "P40", price: 7200, oldPrice: 8500, emoji: "📟", badge: "Acessível", specs: "6.6\" · 2GB RAM · 32GB · 5000mAh · Android 12 Go" },
+    { id: 6, brand: "Infinix", name: "Hot 40", price: 14800, oldPrice: 17000, emoji: "🔥", badge: "Novo", specs: "6.78\" · 8GB RAM · 256GB · 5000mAh · Android 13" },
+  ];
+
+  let cart = [];
+
+  function formatMZN(val) { return val.toLocaleString('pt-MZ') + ' MZN'; }
+
+  function renderProducts() {
+    const grid = document.getElementById('productsGrid');
+    grid.innerHTML = products.map(p => `
+      <div class="product-card">
+        <div class="product-badge">${p.badge}</div>
+        <div class="product-img">${p.emoji}</div>
+        <div class="product-body">
+          <div class="product-brand">${p.brand}</div>
+          <div class="product-name">${p.name}</div>
+          <div class="product-specs">${p.specs}</div>
+          <div class="product-footer">
+            <div>
+              <span class="product-price-old">${formatMZN(p.oldPrice)}</span>
+              <span class="product-price">${formatMZN(p.price)}</span>
+            </div>
+            <button class="add-cart-btn" onclick="addToCart(${p.id})">+ Carrinho</button>
+          </div>
+        </div>
+      </div>
+    `).join('');
+  }
+
+  function addToCart(id) {
+    const product = products.find(p => p.id === id);
+    const existing = cart.find(c => c.id === id);
+    if (existing) { existing.qty++; } else { cart.push({...product, qty: 1}); }
+    updateCartCount();
+    showToast(`${product.name} adicionado ao carrinho!`);
+  }
+
+  function updateCartCount() {
+    const total = cart.reduce((sum, c) => sum + c.qty, 0);
+    document.getElementById('cartCount').textContent = total;
+  }
+
+  function toggleCart() {
+    const overlay = document.getElementById('cartOverlay');
+    overlay.classList.toggle('open');
+    renderCart();
+  }
+
+  function renderCart() {
+    const container = document.getElementById('cartItems');
+    const footer = document.getElementById('cartFooter');
+    if (cart.length === 0) {
+      container.innerHTML = '<div class="cart-empty">🛒<br/>O carrinho está vazio</div>';
+      footer.style.display = 'none';
+      return;
+    }
+    container.innerHTML = cart.map(item => `
+      <div class="cart-item">
+        <div class="cart-item-icon">${item.emoji}</div>
+        <div class="cart-item-info">
+          <div class="cart-item-name">${item.brand} ${item.name} ×${item.qty}</div>
+          <div class="cart-item-price">${formatMZN(item.price * item.qty)}</div>
+        </div>
+        <button class="remove-btn" onclick="removeFromCart(${item.id})">🗑️</button>
+      </div>
+    `).join('');
+    const total = cart.reduce((sum, c) => sum + c.price * c.qty, 0);
+    document.getElementById('cartTotal').textContent = formatMZN(total);
+    footer.style.display = 'block';
+  }
+
+  function removeFromCart(id) {
+    cart = cart.filter(c => c.id !== id);
+    updateCartCount();
+    renderCart();
+  }
+
+  function openCheckout() {
+    document.getElementById('cartOverlay').classList.remove('open');
+    document.getElementById('checkoutOverlay').classList.add('open');
+    const total = cart.reduce((sum, c) => sum + c.price * c.qty, 0);
+    document.getElementById('checkoutSubtotal').textContent = formatMZN(total);
+    document.getElementById('checkoutTotal').textContent = formatMZN(total + 100);
+  }
+
+  function closeCheckout() { document.getElementById('checkoutOverlay').classList.remove('open'); }
+
+  function togglePaymentFields() {
+    const method = document.getElementById('paymentMethod').value;
+    document.getElementById('mpesaFields').style.display = method === 'mpesa' || method === 'emola' ? 'block' : 'none';
+    document.getElementById('cardFields').style.display = method === 'card' ? 'block' : 'none';
+  }
+
+  function placeOrder() {
+    const orderNum = '#MCZ-' + Math.floor(100000 + Math.random() * 900000);
+    document.getElementById('orderNum').textContent = orderNum;
+    document.getElementById('checkoutOverlay').classList.remove('open');
+    document.getElementById('successOverlay').classList.add('open');
+    cart = [];
+    updateCartCount();
+  }
+
+  function closeSuccess() {
+    document.getElementById('successOverlay').classList.remove('open');
+  }
+
+  function showToast(msg) {
+    const toast = document.getElementById('toast');
+    toast.textContent = '✅ ' + msg;
+    toast.classList.add('show');
+    setTimeout(() => toast.classList.remove('show'), 3000);
+  }
+
+  renderProducts();
+</script>
+</body>
+</html>
